@@ -46,25 +46,22 @@ else document.write("Fail");
 
 **5. DOM manipulation**
 <!DOCTYPE html>
-<html><head><meta charset="utf-8"><title>DOM</title></head><body>
-<h1 id="h">Hello Students!</h1>
-<img id="img" width="150" height="150"><br>
+<html>
+<body>
+<h1 id="heading">Hello Students!</h1>
+<p id="message">This is the original content.</p>
+<img id="pic" src="image1.jpg" width="200"><br><br>
 <button onclick="change()">Click Me</button>
 <script>
-// Pictures are drawn as small SVG images stored in the page (no internet needed)
-function pic(color, label) {
-return "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='150' height='150'>" +
-"<rect width='150' height='150' fill='" + color + "'/>" +
-"<text x='75' y='82' font-size='22' text-anchor='middle' fill='white'>" + label + "</text></svg>";
-}
-document.getElementById("img").src = pic("orange", "Picture 1");
 function change() {
-document.getElementById("h").innerHTML = "Content Changed!";
-document.body.style.background = "lightblue";
-document.getElementById("img").src = pic("green", "Picture 2");
+heading.innerHTML = "Welcome to JavaScript!"; // content
+message.innerHTML = "The content has been changed.";
+document.body.style.backgroundColor = "lightblue"; // color
+pic.src = "image2.jpg"; // image
 }
 </script>
-</body></html>
+</body>
+</html>
 
 **6. Form validation**
 <!DOCTYPE html>
