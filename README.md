@@ -144,30 +144,39 @@ if (isset($_COOKIE['u'])) echo "Cookie: " . htmlspecialchars($_COOKIE['u']);
 <p><small>Login: student / 1234. Cookie shows after the next reload.</small></p>
 
 **10. MySQL CRUD**
-Run in phpMyAdmin → SQL:
-CREATE DATABASE college; USE college;
-CREATE TABLE students(id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(50), course
-VARCHAR(50));
-
 <?php
-$c = mysqli_connect("localhost","root","","college");
-extract($_POST);
-if (isset($insert)) mysqli_query($c,"INSERT INTO students(name,course)
-VALUES('$name','$course')");
-if (isset($update)) mysqli_query($c,"UPDATE students SET name='$name',
-course='$course' WHERE id='$id'");
-if (isset($delete)) mysqli_query($c,"DELETE FROM students WHERE id='$id'");
+// Creates the database and table automatically - no phpMyAdmin step needed
+$c = mysqli_connect("localhost", "root", "");
+mysqli_query($c, "CREATE DATABASE IF NOT EXISTS college");
+mysqli_select_db($c, "college");
+mysqli_query($c, "CREATE TABLE IF NOT EXISTS students(
+id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(50), course VARCHAR(50))");
+if ($_POST) {
+$id = (int)($_POST['id'] ?? 0);
+$name = mysqli_real_escape_string($c, $_POST['name'] ?? '');
+$course = mysqli_real_escape_string($c, $_POST['course'] ?? '');
+if (isset($_POST['insert']))
+mysqli_query($c, "INSERT INTO students(name,course) VALUES('$name','$course')");
+if (isset($_POST['update']))
+mysqli_query($c, "UPDATE students SET name='$name', course='$course' WHERE id=$id");
+if (isset($_POST['delete']))
+mysqli_query($c, "DELETE FROM students WHERE id=$id");
+header("Location: " . $_SERVER['PHP_SELF']); exit;
+}
+$r = mysqli_query($c, "SELECT * FROM students");
 ?>
 <form method="post">
-ID <input name="id"> Name <input name="name"> Course <input name="course"><br>
+ID <input name="id" size="3"> Name <input name="name"> Course <input name="course"><br>
 <button name="insert">Insert</button>
 <button name="update">Update</button>
 <button name="delete">Delete</button>
 </form>
 <table border="1">
+<tr><th>ID</th><th>Name</th><th>Course</th></tr>
 <?php
-$r = mysqli_query($c,"SELECT * FROM students");
 while ($s = mysqli_fetch_assoc($r))
-echo "<tr><td>$s[id]</td><td>$s[name]</td><td>$s[course]</td></tr>";
+echo "<tr><td>{$s['id']}</td><td>" . htmlspecialchars($s['name']) .
+"</td><td>" . htmlspecialchars($s['course']) . "</td></tr>";
 ?>
 </table>
+<small>Insert: fill Name + Course. Update/Delete: fill the ID from the table.</small>
